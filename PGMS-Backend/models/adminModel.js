@@ -11,6 +11,7 @@ const adminSchema = new mongoose.Schema({
     city: String,
     state: String,
     area: String,
+    pincode: String
   }
 });
 

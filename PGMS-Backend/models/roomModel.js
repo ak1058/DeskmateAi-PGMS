@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const bedSchema = new mongoose.Schema({
+  bedId: { type: String, required: true },
+  occupancyStatus: { type: Boolean, default: false } 
+});
+
 const roomSchema = new mongoose.Schema({
   roomNumberId: { type: String, required: true },
   sharingType: {
@@ -7,7 +12,9 @@ const roomSchema = new mongoose.Schema({
     required: true,
     enum: ['single', 'double', 'triple', 'quadruple'],
     default: 'single'
-  }
+  },
+  price: { type: Number, required: true },
+  beds: [bedSchema] 
 });
 
 const floorSchema = new mongoose.Schema({
