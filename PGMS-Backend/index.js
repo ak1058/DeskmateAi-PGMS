@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const adminRoutes = require('./routes/adminRoutes');
+const tenantRoutes = require('./routes/tenantRoutes');
 
 const app = express();
 
@@ -18,7 +19,18 @@ app.use(express.json());
 // Routes
 app.get('/', (req, res) => res.send('PGMS'));
 app.use('/admin', adminRoutes);
-app.use('/tenant', tenantRoutes); // You can add this later
+app.use('/tenant', tenantRoutes); 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+mongoose.connect(process.env.MONGODB_URI)
+.then(()=>{
+    app.listen(PORT, ()=>{
+        console.log("Server started on port no.  "+PORT);
+    });
+})
+.catch((error)=>{
+    console.log(error);
+})

@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+
 
 const adminSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  phoneNumber: { type: String, required: true, unique: true },
+  adminEmail: { type: String, required: true, unique: true },
+  adminPhoneNumber: { type: String, required: true, unique: true },
   adminName: { type: String, required: true },
   pgName: { type: String, required: true },
-  password: { type: String, required: true },
-  address: {
+  pgImageUrl: {type: String},
+  adminPassword: { type: String, required: true },
+  adminAddress: {
     city: String,
     state: String,
     area: String,
@@ -15,11 +16,7 @@ const adminSchema = new mongoose.Schema({
   }
 });
 
-adminSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
-});
+
 
 const Admin = mongoose.model('Admin', adminSchema);
 

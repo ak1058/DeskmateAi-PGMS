@@ -23,6 +23,7 @@ const floorSchema = new mongoose.Schema({
 });
 
 const pgSchema = new mongoose.Schema({
+  adminId: {type: String, required: true },
   pgName: { type: String, required: true },
   pgId: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId(), auto: true },
   totalFloors: { type: Number, required: true },
