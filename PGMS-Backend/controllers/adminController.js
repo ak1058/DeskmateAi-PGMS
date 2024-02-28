@@ -78,7 +78,7 @@ exports.loginAdmin = async (req, res) => {
 exports.setupPG = async (req, res) => {
   try {
     // Extract admin details from the request (provided by auth middleware)
-    const adminId = req.admin.adminId;
+    const adminId = req.data.adminId;
 
     // Extract data for setting up PG structure from request body
     const { pgName, totalFloors, floors } = req.body;

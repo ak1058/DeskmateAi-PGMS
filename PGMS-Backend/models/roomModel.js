@@ -13,7 +13,7 @@ const roomSchema = new mongoose.Schema({
     enum: ['single', 'double', 'triple', 'quadruple'],
     default: 'single'
   },
-  price: { type: Number, required: true },
+  price: { type: Number },  // not requiered at the time of setting up the pg
   beds: [bedSchema] 
 });
 
