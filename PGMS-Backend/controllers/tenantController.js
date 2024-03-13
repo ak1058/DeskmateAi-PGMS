@@ -1,8 +1,14 @@
 const Tenant = require("../models/tenantModel");
-
+const axios = require('axios');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const uniqid = require('uniqid');
+const sha256 = require('sha256')
 const SECRET_KEY = process.env.SECRET_KEY;
+const PHONEPAY_PAY_HOSTURL = process.env.PHONEPAY_PAY_HOSTURL;
+const PHONEPAY_MERCHANTID = process.env.PHONEPAY_MERCHANTID;
+const SALT_KEY = process.env.SALT_KEY;
+const SALT_INDEX = process.env.SALT_INDEX;
 
 // Tenant Registration
 exports.registerTenant = async (req, res) => {
@@ -122,6 +128,69 @@ exports.getPaymentRecordsByTenantId = async (req, res) => {
     res.status(500).json({ message: 'Error fetching payment records', error: error.message });
   }
 };
+
+
+// phone pay mayment integration 
+exports.handlePayment = async(req, res) =>{
+
+  
+  console.log("hiii")
+  const tenantId = "req.data.tenantId";
+  const merchantTransactionId = uniqid();
+const payload = {
+  "merchantId": PHONEPAY_MERCHANTID,
+  "merchantTransactionId": merchantTransactionId,
+  "merchantUserId": tenantId,
+  "amount": 10000,
+  "redirectUrl": `http://localhost:3000/tenant/redirect-url/${merchantTransactionId}`,
+  "redirectMode": "REDIRECT",
+ 
+  "mobileNumber": "9999999999",
+  "paymentInstrument": {
+    "type": "PAY_PAGE"
+  }
+}
+
+
+//SHA256(Base64 encoded payload + “/pg/v1/pay” + salt key) + ### + salt index
+
+const bufferObj = Buffer.from(JSON.stringify(payload), "utf-8");
+const Base64EncodedPayload = bufferObj.toString('base64')
+const xVerify = sha256(Base64EncodedPayload + "/pg/v1/pay" + SALT_KEY)  + "###" + SALT_INDEX
+
+
+
+const options = {
+  method: 'post',
+  url: `${PHONEPAY_PAY_HOSTURL}/pg/v1/pay`,
+  headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Verify': xVerify
+				},
+data: {
+  request: Base64EncodedPayload
+}
+};
+axios
+  .request(options)
+      .then(function (response) {
+      console.log(response.data);
+      
+      const url = response.data.data.instrumentResponse.redirectInfo.url;
+      res.redirect(url);
+  })
+  .catch(function (error) {
+    console.error(error.message);
+  });
+}
+
+exports.getResponse = async(req, res) =>{
+  console.log("nnn")
+  const id = req.params
+  res.send(id);
+}
+
 
 
 

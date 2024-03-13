@@ -9,4 +9,7 @@ router.post('/login', tenantController.loginTenant);
 router.post('/setToPaymentRecords', authMiddleware, tenantController.setToPaymentRecords);
 router.get('/getPaymentsOfTenant', authMiddleware, tenantController.getPaymentRecordsByTenantId);
 
+router.get('/payment', tenantController.handlePayment);
+router.get('/redirect-url/:merchantTransactionId', tenantController.getResponse)
+
 module.exports = router;
