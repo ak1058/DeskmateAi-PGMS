@@ -30,7 +30,7 @@ exports.registerTenant = async (req, res) => {
     });
 
     // Create a new tenant
-    const tenant = await Tenant.create({
+    const tenant = await Tenant.Tenant.create({
       tenantName,
       tenantEmail,
       tenantPassword: hashedPassword,
