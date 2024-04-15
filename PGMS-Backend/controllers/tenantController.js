@@ -11,29 +11,87 @@ const SALT_KEY = process.env.SALT_KEY;
 const SALT_INDEX = process.env.SALT_INDEX;
 
 // Tenant Registration
+// exports.registerTenant = async (req, res) => {
+//   try {
+//     const { tenantName, tenantEmail, tenantPassword, tenantAddress, tenantAadharNumber, tenantAadharCardPdfUrl, tenantPhoneNo, tenantImageUrl, pgId, pgName, monthlyRent, securityDeposit} = req.body;
+
+
+//     const existingTenant = await Tenant.Tenant.findOne({ $or: [{ tenantEmail }, { tenantPhoneNo }] });
+//     if (existingTenant) {
+//       return res.status(400).send({ message: 'Tenant already exists with given email or phone number.' });
+//     }
+
+//     // Hash tenant's password
+//     const hashedPassword = await bcrypt.hash(tenantPassword, 10);
+    
+
+//     // Create a new tenant
+//     const tenant = await Tenant.Tenant.create({
+//       tenantName,
+//       tenantEmail,
+//       tenantPassword: hashedPassword,
+//       tenantAddress,
+//       tenantAadharNumber,
+//       tenantAadharCardPdfUrl,
+//       tenantPhoneNo,
+//       tenantImageUrl,
+//       pgId,
+//       pgName,
+//       currentDate,
+//       monthlyRent,
+//       securityDeposit,
+
+//     });
+
+   
+//     const token = jwt.sign({ tenantEmail: tenantEmail, tenantId: tenant._id }, SECRET_KEY);
+
+//     res.status(201).send({ tenant: tenant, token: token, message: 'Tenant registered successfully', tenantId: tenant._id });
+//   } catch (error) {
+//     res.status(500).send({ message: 'Error registering tenant', error: error.message });
+//   }
+// };
+
+// Tenant Registration
 exports.registerTenant = async (req, res) => {
   try {
-    const { tenantName, tenantEmail, tenantPassword, tenantAddress, tenantAadharNumber, tenantAadharCardPdfUrl, tenantPhoneNo, tenantImageUrl, pgId, pgName, monthlyRent, securityDeposit} = req.body;
+    const { tenantName, tenantEmail, tenantPassword } = req.body;
 
-
-    const existingTenant = await Tenant.Tenant.findOne({ $or: [{ tenantEmail }, { tenantPhoneNo }] });
+    // Check if tenant already exists
+    const existingTenant = await Tenant.Tenant.findOne({ $or: [{ tenantEmail }] });
     if (existingTenant) {
-      return res.status(400).send({ message: 'Tenant already exists with given email or phone number.' });
+      return res.status(400).send({ message: 'Tenant already exists with given email.' });
     }
 
     // Hash tenant's password
     const hashedPassword = await bcrypt.hash(tenantPassword, 10);
-    const currentDate = new Date().toLocaleDateString('en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
-
-    // Create a new tenant
     const tenant = await Tenant.Tenant.create({
       tenantName,
       tenantEmail,
       tenantPassword: hashedPassword,
+    });
+
+    // Generate JWT token
+    const token = jwt.sign({ tenantEmail: tenantEmail, tenantId: tenant._id }, SECRET_KEY);
+
+    res.status(201).send({ tenant: tenant, token: token, message: 'Tenant registered successfully', tenantId: tenant._id });
+  } catch (error) {
+    res.status(500).send({ message: 'Error registering tenant', error: error.message });
+  }
+};
+
+// Function to update additional details of a registered tenant
+exports.registerTenantForPG = async (req, res) => {
+  try {
+    const { tenantId } = req.params;
+    const { tenantAddress, tenantAadharNumber, tenantAadharCardPdfUrl, tenantPhoneNo, tenantImageUrl, pgId, pgName, monthlyRent, securityDeposit } = req.body;
+    const currentDate = new Date().toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+    // Update tenant details
+    const updatedTenant = await Tenant.Tenant.findByIdAndUpdate(tenantId, {
       tenantAddress,
       tenantAadharNumber,
       tenantAadharCardPdfUrl,
@@ -44,15 +102,11 @@ exports.registerTenant = async (req, res) => {
       currentDate,
       monthlyRent,
       securityDeposit,
+    }, { new: true });
 
-    });
-
-   
-    const token = jwt.sign({ tenantEmail: tenantEmail, tenantId: tenant._id }, SECRET_KEY);
-
-    res.status(201).send({ tenant: tenant, token: token, message: 'Tenant registered successfully', tenantId: tenant._id });
+    res.status(200).send({ tenant: updatedTenant, message: 'Tenant registered for Pg successfully' });
   } catch (error) {
-    res.status(500).send({ message: 'Error registering tenant', error: error.message });
+    res.status(500).send({ message: 'Error updating tenant details', error: error.message });
   }
 };
 

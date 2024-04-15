@@ -10,15 +10,15 @@ const tenantSchema = new mongoose.Schema({
     area: String,
     pincode: String
   },
-  tenantAadharNumber: { type: String, required: true, unique: true },
+  tenantAadharNumber: { type: String, unique: true },
   tenantAadharCardPdfUrl: { type: String },
-  tenantPhoneNo: { type: String, required: true, unique: true },
+  tenantPhoneNo: { type: String, unique: true },
   tenantImageUrl: {type: String},
   pgId: { type: String },
   pgName: { type: String },
   tenantDoj: { type: Date, default: Date.now },
-  monthlyRent: { type: String, required: true},
-  securityDeposit: { type: String, required: true},
+  monthlyRent: { type: String},
+  securityDeposit: { type: String},
 
 });
 
