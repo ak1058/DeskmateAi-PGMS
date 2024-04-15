@@ -113,10 +113,10 @@ exports.registerTenantForPG = async (req, res) => {
 // Tenant Login
 exports.loginTenant = async (req, res) => {
   try {
-    const { tenantEmail, tenantPhoneNo, tenantPassword } = req.body;
+    const { tenantEmail, tenantPassword } = req.body;
 
     // Check if tenant exists
-    const existingTenant = await Tenant.Tenant.findOne({ $or: [{ tenantEmail }, { tenantPhoneNo }] });
+    const existingTenant = await Tenant.Tenant.findOne({ $or: [{ tenantEmail }] });
     if (!existingTenant) {
       return res.status(404).send({ message: 'Tenant not found' });
     }
