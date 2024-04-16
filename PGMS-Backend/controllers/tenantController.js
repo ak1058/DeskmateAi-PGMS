@@ -102,6 +102,7 @@ exports.registerTenantForPG = async (req, res) => {
       currentDate,
       monthlyRent,
       securityDeposit,
+      isRegisteredWithPg: true
     }, { new: true });
 
     res.status(200).send({ tenant: updatedTenant, message: 'Tenant registered for Pg successfully' });

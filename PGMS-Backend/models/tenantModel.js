@@ -19,6 +19,7 @@ const tenantSchema = new mongoose.Schema({
   tenantDoj: { type: Date, default: Date.now },
   monthlyRent: { type: String},
   securityDeposit: { type: String},
+  isRegisteredWithPg: {type: Boolean}
 
 });
 
