@@ -10,9 +10,9 @@ const tenantSchema = new mongoose.Schema({
     area: String,
     pincode: String
   },
-  tenantAadharNumber: { type: String, unique: true },
+  tenantAadharNumber: { type: String },
   tenantAadharCardPdfUrl: { type: String },
-  tenantPhoneNo: { type: String, unique: true },
+  tenantPhoneNo: { type: String },
   tenantImageUrl: {type: String},
   pgId: { type: String },
   pgName: { type: String },
