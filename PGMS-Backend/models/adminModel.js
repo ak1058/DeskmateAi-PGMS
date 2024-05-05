@@ -6,6 +6,7 @@ const adminSchema = new mongoose.Schema({
   adminPhoneNumber: { type: String, required: true, unique: true },
   adminName: { type: String, required: true },
   pgName: { type: String, required: true },
+  pgId: { type: String, required: true },
   pgImageUrl: {type: String},
   adminPassword: { type: String, required: true },
   adminAddress: {

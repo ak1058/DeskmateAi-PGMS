@@ -7,7 +7,7 @@ const PG = require('../models/roomModel');
 // Admin Registration
 exports.registerAdmin = async (req, res) => {
   try {
-    const { adminEmail, adminPhoneNumber, adminName, pgName, adminPassword, adminAddress, pgImageUrl} = req.body;
+    const { adminEmail, adminPhoneNumber, adminName, pgName, pgId, adminPassword, adminAddress, pgImageUrl} = req.body;
 
     // Check if admin already exists
     const existingAdmin = await Admin.findOne({ $or: [{ adminEmail }, { adminPhoneNumber }] });
@@ -24,6 +24,7 @@ exports.registerAdmin = async (req, res) => {
       adminPhoneNumber,
       adminName,
       pgName,
+      pgId,
       adminPassword:hashAdminPassword,
       adminAddress,
       pgImageUrl
